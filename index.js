@@ -42,7 +42,7 @@ app.get('/info', (req, res) => {
     const date = new Date()
     res.send(
         `<p>Phonebook has info for ${persons.length} people</p>
-        <p>${date.toString()}</p>`
+         <p>${date.toString()}</p>`
     ).end();
 })
 
@@ -70,8 +70,31 @@ const generateId = () => {
     return Math.trunc(Math.random() * 10000000)
 }
 
+const verifyName = (name) => {
+    return persons.find(p => p.name === name)
+}
+
 app.post('/api/persons' , (req, res) => {
     const body = req.body
+
+    if(!body.name)
+    {
+        return res.status(400).json({
+            error: 'Name missing'
+        })
+    }
+
+    if (!body.number) {
+        return res.status(400).json({
+            error: 'Number missing'
+        })
+    }
+
+    if(verifyName(body.name)) {
+        return res.status(400).json({
+            error: 'Name must be unique'
+        })
+    }
 
     const entry = {
         name: body.name,

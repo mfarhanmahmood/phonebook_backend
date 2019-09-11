@@ -1,7 +1,7 @@
-### Get All entries in persons
+### Get All entries in the database(persons array)
 GET http://localhost:3001/api/persons HTTP/1.1
 
-### Get total number of entries in database
+### Get total number of entries in database(persons array)
 
 GET http://localhost:3001/info HTTP/1.1
 
