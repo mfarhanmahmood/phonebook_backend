@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
 
 
 let persons = [
@@ -61,6 +64,23 @@ app.delete('/api/persons/:id', (req, res) => {
 
     res.status(204).end()
 
+})
+
+const generateId = () => {
+    return Math.trunc(Math.random() * 10000000)
+}
+
+app.post('/api/persons' , (req, res) => {
+    const body = req.body
+
+    const entry = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+
+    persons = persons.concat(entry)
+    res.json(entry)
 })
 
 

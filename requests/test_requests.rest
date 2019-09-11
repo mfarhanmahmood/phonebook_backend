@@ -10,6 +10,17 @@ GET http://localhost:3001/info HTTP/1.1
 GET http://localhost:3001/api/persons/1 HTTP/1.1
 
 
-###
+### Delete an Entry from the phonebook
 
 DELETE http://localhost:3001/api/persons/5 HTTP/1.1
+
+
+### Enter a new entry to the phonebook
+
+POST http://localhost:3001/api/persons HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Dummy Entry",
+    "number": "040-2789-4511"
+}
