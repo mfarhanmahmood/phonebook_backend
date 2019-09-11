@@ -1,0 +1,30 @@
+{
+  "name": "phonebook_backend",
+  "version": "0.0.1",
+  "description": "Backend server for the phonebook project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch" : "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfarhanmahmood/phonebook_backend.git"
+  },
+  "keywords": [
+    "phonebook_backend"
+  ],
+  "author": "M. Farhan Mahmood",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mfarhanmahmood/phonebook_backend/issues"
+  },
+  "homepage": "https://github.com/mfarhanmahmood/phonebook_backend#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}
