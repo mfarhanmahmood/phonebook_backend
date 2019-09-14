@@ -24,3 +24,8 @@ Content-Type: application/json
     "name": "Dummy Entry",
     "number": "040-2789-4511"
 }
+
+### Unknown entrypoint
+GET http://localhost:3001/unknown HTTP/1.1
+
+
