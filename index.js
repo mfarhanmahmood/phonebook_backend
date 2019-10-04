@@ -58,7 +58,13 @@ app.delete('/api/persons/:id', (req, res) => {
 });
 
 const verifyName = name => {
-  return false; //persons.find(p => p.name === name);
+  Person.find({ name: name }).then(result => {
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 };
 
 app.post('/api/persons', (req, res) => {
@@ -91,6 +97,27 @@ app.post('/api/persons', (req, res) => {
   entry.save().then(savedEntry => {
     res.json(savedEntry.toJSON());
   });
+});
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body;
+
+  if (!body.name || !body.number) {
+    res.status(400).json({
+      error: 'Malformed request body'
+    });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number
+  };
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedEntry => {
+      res.json(updatedEntry.toJSON());
+    })
+    .catch(error => next(error));
 });
 
 const unknownEndpoint = (request, response, next) => {
