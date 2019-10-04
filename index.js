@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 
-const Phonebook = require('./models/phonebook');
+const Person = require('./models/phonebook');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -18,29 +18,6 @@ app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :data')
 );
 
-// let persons = [
-//   {
-//     name: 'Arto Hellas',
-//     number: '040-123456',
-//     id: 1
-//   },
-//   {
-//     name: 'Ada Lovelace',
-//     number: '39-44-5323523',
-//     id: 2
-//   },
-//   {
-//     name: 'Dan Abramov',
-//     number: '12-43-234345',
-//     id: 3
-//   },
-//   {
-//     name: 'Mary Poppendieck',
-//     number: '39-23-6423122',
-//     id: 4
-//   }
-// ];
-
 app.get('/', (req, res) => {
   res.send(
     '<p>Error 404: Resource not found,<br />Check your URL for mistakes</p>'
@@ -49,14 +26,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/persons', (req, res) => {
-  Phonebook.find({}).then(persons => {
+  Person.find({}).then(persons => {
     res.json(persons.map(person => person.toJSON()));
   });
 });
 
 app.get('/info', (req, res) => {
   const date = new Date();
-  Phonebook.find({}).then(persons => {
+  Person.find({}).then(persons => {
     res
       .send(
         `<p>Phonebook has info for ${persons.length} people</p>
@@ -67,28 +44,23 @@ app.get('/info', (req, res) => {
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const entry = persons.find(p => p.id === id);
-  if (entry) {
-    res.json(entry);
-  } else {
-    res.status(404).end();
-  }
+  Person.findById(req.params.id)
+    .then(person => res.json(person.toJSON()))
+    .catch(err => res.status(404).end());
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter(p => p.id !== id);
-
-  res.status(204).end();
+  Person.findByIdAndDelete(req.params.id, (error, data) => {
+    if (error) {
+      res.json({ Error: 'Error in deleting entry' });
+    } else {
+      res.status(204).end();
+    }
+  });
 });
 
-const generateId = () => {
-  return Math.trunc(Math.random() * 10000000);
-};
-
 const verifyName = name => {
-  return persons.find(p => p.name === name);
+  return false; //persons.find(p => p.name === name);
 };
 
 app.post('/api/persons', (req, res) => {
@@ -112,14 +84,15 @@ app.post('/api/persons', (req, res) => {
     });
   }
 
-  const entry = {
+  const entry = new Person({
     name: body.name,
     number: body.number,
-    id: generateId()
-  };
+    date: new Date()
+  });
 
-  persons = persons.concat(entry);
-  res.json(entry);
+  entry.save().then(savedEntry => {
+    res.json(savedEntry.toJSON());
+  });
 });
 
 const PORT = process.env.PORT;
