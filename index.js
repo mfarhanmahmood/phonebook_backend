@@ -18,13 +18,6 @@ app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :data')
 );
 
-app.get('/', (req, res) => {
-  res.send(
-    '<p>Error 404: Resource not found,<br />Check your URL for mistakes</p>'
-  );
-  res.status(404);
-});
-
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons.map(person => person.toJSON()));
@@ -57,36 +50,8 @@ app.delete('/api/persons/:id', (req, res) => {
     .catch(error => next(error));
 });
 
-const verifyName = name => {
-  Person.find({ name: name }).then(result => {
-    if (result) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-};
-
 app.post('/api/persons', (req, res) => {
   const body = req.body;
-
-  if (!body.name) {
-    return res.status(400).json({
-      error: 'Name missing'
-    });
-  }
-
-  if (!body.number) {
-    return res.status(400).json({
-      error: 'Number missing'
-    });
-  }
-
-  if (verifyName(body.name)) {
-    return res.status(400).json({
-      error: 'Name must be unique'
-    });
-  }
 
   const entry = new Person({
     name: body.name,
@@ -94,9 +59,12 @@ app.post('/api/persons', (req, res) => {
     date: new Date()
   });
 
-  entry.save().then(savedEntry => {
-    res.json(savedEntry.toJSON());
-  });
+  entry
+    .save()
+    .then(savedEntry => {
+      res.json(savedEntry.toJSON());
+    })
+    .catch(error => res.status(400).json(error));
 });
 
 app.put('/api/persons/:id', (req, res, next) => {
