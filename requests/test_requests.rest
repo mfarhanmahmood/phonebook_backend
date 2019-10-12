@@ -25,6 +25,16 @@ Content-Type: application/json
     "number": "040-2789-4511"
 }
 
+### checking of short length validation of a new entry to the phonebook
+
+POST http://localhost:3001/api/persons HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Te",
+    "number": "040-2789-4511"
+}
+
 ### Unknown entrypoint
 GET http://localhost:3001/unknown HTTP/1.1
 
